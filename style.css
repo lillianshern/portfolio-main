@@ -1,0 +1,132 @@
+* {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-size: 1rem;
+  line-height: 1.25;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.backgroundimg-home {
+  background-image: url("logan-weaver-vPdSlSyTjss-unsplash.jpg");
+  height: 100vh;
+  width: 100%;
+  /* change pic stretch to fit */
+  background-size: cover; 
+  /* position of img */
+  background-position: center;
+  /* make it lighter */
+  /* opacity: 0.5; */
+  /* flexbox to cernter text */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  color: #f2f2f2;
+}
+.flexbox1 {
+  display: flex;
+  align-content: flex-end;
+}
+.background1{
+  background-color: #f2f2f2;
+  color: #a6a6a6
+}
+.background1 > .inner{
+  width: 90%;
+  margin: 0 auto;
+}
+.container {
+  color: black;
+}
+#contact{
+  width: 300px;
+  text-align: center;
+}
+
+#contact > h1 {
+  text-align: center;
+}
+
+/* css for the flexbox in CV */
+/* Column container */
+.row {  
+  display: flex;
+  flex-wrap: wrap;
+}
+/* Create two unequal columns that sits next to each other */
+/* Sidebar/left column */
+.side {
+  flex: 30%;
+  background-color: #f1f1f1;
+  padding: 100px;
+}
+/* Main column */
+.main {
+  flex: 70%;
+  background-color: white;
+  padding: 100px;
+
+}
+/* Footer */
+.footer {
+  padding: 20px;
+  text-align: center;
+  background: #ddd;
+}
+.cont {
+  display: flex;
+  padding: 50px;
+}
+
+.post-preview {
+  margin-left: 40px;
+  text-align: center;
+}
+.cont > img {
+  height: 300px;
+}
+
+.mobile-menu {
+  display: none;
+}
+
+.visible {
+  display: flex;
+}
+
+@media only screen and (max-width: 700px) {
+  .mobile-menu {
+      display: grid;
+      grid-template-columns: auto ;
+      border: none;
+      color: #f2f2f2;
+      padding: 15px 32px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      width: 100%;
+  }
+  .cont {
+    flex-direction: column;
+  }
+  .post-preview {
+    text-align: center;
+    margin-left: 0;
+  }
+  header.masthead {
+    margin-bottom: 0;
+    height: 100vh;
+    background: no-repeat center center;
+    background-color: #868e96;
+    background-attachment: scroll;
+    position: relative;
+    background-size: cover
+  }
+}
+.changeColor{
+  background-color: #f2f2f2;
+  color: #a6a6a6;
+  padding: 6rem 2rem 4rem 2rem;
+}
