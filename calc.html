@@ -247,21 +247,16 @@ document.addEventListener("DOMContentLoaded", function () {
         `;
         });
     });
-    </script>
-    <script>
-    document.getElementById("downloadExcel").onclick = () => {
-        if (typeof needs === "undefined" || typeof wants === "undefined" || typeof savings === "undefined") {
-            alert("Please calculate your budget before exporting!");
-            return;
-        }
 
+     // === Excel Export ===
+     downloadBtn.onclick = function() {
         const wb = XLSX.utils.book_new();
         wb.Props = { Title: "Personal Financial Statement", Author: "SmartBudget", CreatedDate: new Date() };
 
         // --- Base totals ---
         const totalAssets = needs + wants + savings;
         const q2Assets = totalAssets * 1.02;
-        const q4Assets = totalAssets * 1.05;
+        const q4Assets = totalAssets * 1.05; 
 
         // === Assets section ===
         const assets = [
@@ -271,6 +266,23 @@ document.addEventListener("DOMContentLoaded", function () {
             ["Savings & Debt Repayment", savings.toFixed(2), (savings * 1.02).toFixed(2), (savings * 1.05).toFixed(2)],
             ["TOTAL CURRENT ASSETS", totalAssets.toFixed(2), q2Assets.toFixed(2), q4Assets.toFixed(2)],
         ];
+        
+        const data = [
+            ["Personal Financial Statement Template"],
+            [],
+            ["ASSETS", "START OF FY", "Q2 TOTAL", "Q4 TOTAL"],
+            ["Needs (Rent, Bills, Groceries, Medical)", `$${needs.toFixed(2)}`, `$${(needs*1.02).toFixed(2)}`, `$${(needs*1.05).toFixed(2)}`],
+            ["Wants (Dining, Entertainment, Shopping)", `$${wants.toFixed(2)}`, `$${(wants*1.02).toFixed(2)}`, `$${(wants*1.05).toFixed(2)}`],
+            ["Savings & Debt Repayment", `$${savings.toFixed(2)}`, `$${(savings*1.02).toFixed(2)}`, `$${(savings*1.05).toFixed(2)}`],
+            [],
+            ["LIABILITIES", "START OF FY", "Q2 TOTAL", "Q4 TOTAL"],
+            ["Credit Card Debt", "$9000", "$8800", "$8500"],
+            ["Other Liabilities", "$55", "$55", "$55"],
+            [],
+            ["NET ASSETS", `$${(needs + wants + savings - 9055).toFixed(2)}`, "", ""],
+        ];
+
+        const ws = XLSX.utils.aoa_to_sheet(data);
 
         // === Liabilities placeholder (empty for now) ===
         const liabilities = [
@@ -293,7 +305,6 @@ document.addEventListener("DOMContentLoaded", function () {
             ...netAssets,
         ];
 
-        const ws = XLSX.utils.aoa_to_sheet(wsData);
         const range = XLSX.utils.decode_range(ws["!ref"]);
 
         // === Basic color and border styling ===
@@ -325,10 +336,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 right: { style: "thin", color: { rgb: "CCCCCC" } },
             };
             }
-        }
-
-        XLSX.utils.book_append_sheet(wb, ws, "Budget Summary");
-
+        };
         // === Chart data sheet ===
         const chartData = [
             ["Category", "Amount"],
@@ -347,6 +355,10 @@ document.addEventListener("DOMContentLoaded", function () {
         // === Save File ===
         XLSX.writeFile(wb, "Personal_Budget_Smartsheet.xlsx");
         };
+
+        XLSX.utils.book_append_sheet(wb, ws, "Budget Summary");
+        XLSX.writeFile(wb, "Personal_Budget_Smartsheet.xlsx");
+     
     </script>    
 </body>
 </html>
