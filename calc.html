@@ -8,49 +8,96 @@
     <link rel="stylesheet" href="style.css">
     <title>Finance Projection Calculator</title>
     <style>
-        
-        /* Additional styling */
+        /* --- General Fixes --- */
+        body {
+            padding-top: 100px; /* Fix for fixed-top navbar */
+            background-color: #f5f7fa;
+        }
+        .backgroundimg-home {
+            height: 250px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            background: linear-gradient(120deg, #4b79a1, #283e51);
+            background-size: cover;
+            position: relative;
+            z-index: 1;
+        }
+        .container.changeColor {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* --- Calculator Section --- */
         .calc-container {
-            background: #ffffffd9;
+            background: #ffffff;
             border-radius: 15px;
             padding: 2rem;
             box-shadow: 0 8px 20px rgba(0,0,0,0.1);
             margin-top: 2rem;
-            text-align: center;
         }
         .result-box {
             background: #f8f9fa;
             border-radius: 10px;
-            padding: 1rem;
+            padding: 1.5rem;
             margin-top: 1rem;
-            font-size: 1.2rem;
-            font-weight: 600;
+            text-align: center;
+        }
+        .result-box h4 {
+            margin-bottom: 1rem;
         }
         .result-box span {
             display: block;
             color: #007bff;
+            font-weight: 600;
             font-size: 1.4rem;
         }
-        h2 {
+        h2, h3 {
+            text-align: center;
+        }
+
+        /* --- Budget Breakdown Section --- */
+        .budget-breakdown {
+            background: #ffffff;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        .progress {
+            height: 30px;
             margin-bottom: 1rem;
         }
-        label {
-            font-weight: 500;
+        .progress-bar {
+            font-weight: 600;
         }
-        body {
-            padding-top: 100px; /* pushes content below fixed navbar */
+
+        /* --- Tips Section --- */
+        .tips-section {
+            background: #ffffff;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        .tips-section h3 {
+            margin-bottom: 1rem;
+            color: #007bff;
+        }
+        ul {
+            margin-bottom: 1rem;
         }
     </style>
-   
 </head>
 
 <body>
-    
-    <!-- Navbar-->
+    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
         <div class="container">
             <button class="d-none menu-button">Menu</button>
-            <!-- Mobile Menu -->
             <div class="mobile-menu">
                 <a class="nav-link" href="index.html">Home</a>
                 <a class="nav-link" href="calc.html">Calculator</a>
@@ -58,7 +105,6 @@
                 <a class="nav-link" href="samplework.html">Sample Work</a>
                 <a class="nav-link" href="contact.html">Contact</a>
             </div>
-            <!-- Normal Menu -->
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
@@ -71,19 +117,28 @@
         </div>
     </nav>
 
-    <!-- picture -->
+    <!-- Header -->
     <div class="backgroundimg-home text-center">
         <h1>THE MAGIC CALCULATOR</h1>
         <p>11.06.2025</p>
     </div>
 
+    <div class="container changeColor">
+        <div class="row">
+            <div class="col-lg-8 col-md-10 mx-auto">
+                <p>The magic calculator page will help you calculate your finances, where the numbers are optained by the ceiling method: I look up to the ceiling, think about a magic number, and write it down. </p>
+                <p>jk, most numbers are found online. I will put the work cited/bibliography later when it works.</p>
+            </div>
+        </div>
+    </div>
+
     <!-- Main Content -->
     <div class="container changeColor">
         <div class="row justify-content-center">
-            <div class="col-lg-8 col-md-10 calc-container mx-auto">
+            <div class="col-lg-8 col-md-10 calc-container">
                 <h2>💰 Income Projection Calculator</h2>
-                <p>Enter your pay information to see your projected income over different timeframes.</p>
-                
+                <p class="text-center">Enter your pay information to see your projected income and budgeting recommendations.</p>
+
                 <form id="financeForm">
                     <div class="form-group mb-3">
                         <label for="payType">Are you paid hourly or by paycheck?</label>
@@ -120,14 +175,52 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary mt-3">Calculate</button>
+                    <button type="submit" class="btn btn-primary mt-3 w-100">Calculate</button>
                 </form>
 
                 <div id="results" class="result-box" style="display:none;">
+                    <h4>Your Projected Income</h4>
                     <p>Daily: <span id="daily">$0</span></p>
                     <p>Weekly: <span id="weekly">$0</span></p>
                     <p>Monthly: <span id="monthly">$0</span></p>
                     <p>Yearly: <span id="yearly">$0</span></p>
+                </div>
+
+                <div id="budgetBreakdown" class="budget-breakdown" style="display:none;">
+                    <h3>📊 Suggested Budget Breakdown (50/30/20 Rule)</h3>
+                    <p>The 50/30/20 rule suggests allocating your income into three categories:</p>
+                    <div class="progress">
+                        <div id="needsBar" class="progress-bar bg-primary" style="width:50%">Needs 50%</div>
+                    </div>
+                    <div class="progress">
+                        <div id="wantsBar" class="progress-bar bg-success" style="width:30%">Wants 30%</div>
+                    </div>
+                    <div class="progress">
+                        <div id="savingsBar" class="progress-bar bg-warning" style="width:20%">Savings 20%</div>
+                    </div>
+                    <div class="mt-3 text-center">
+                        <p>Needs: <strong id="needsValue">$0</strong> &nbsp;|&nbsp; Wants: <strong id="wantsValue">$0</strong> &nbsp;|&nbsp; Savings: <strong id="savingsValue">$0</strong></p>
+                    </div>
+                </div>
+
+                <div class="tips-section">
+                    <h3>💡 Budgeting and Spending Tips</h3>
+                    <ul>
+                        <li><strong>50/30/20 rule:</strong> Allocate 50% of income to needs, 30% to wants, and 20% to savings or debt repayment.</li>
+                        <li><strong>Pay yourself first:</strong> Transfer a portion of income to savings or investments before paying bills.</li>
+                        <li><strong>40% rule for debt:</strong> Keep total debt payments below 40% of gross monthly income.</li>
+                    </ul>
+                    <h3>📦 Savings and Investment Rules</h3>
+                    <ul>
+                        <li><strong>Emergency fund:</strong> Save 3–6 months of living expenses for emergencies.</li>
+                        <li><strong>100 minus your age rule:</strong> Subtract your age from 100 to determine the percentage of your portfolio to invest in stocks.</li>
+                    </ul>
+                    <h3>🌱 General Principles</h3>
+                    <ul>
+                        <li><strong>Align spending with values:</strong> Spend on what matters most to you.</li>
+                        <li><strong>Avoid emotional decisions:</strong> Stay disciplined and avoid acting on fear or greed.</li>
+                        <li><strong>Make a down payment:</strong> Aim for 20% on large purchases like homes or cars.</li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -139,6 +232,7 @@
         const paycheckFields = document.getElementById('paycheckFields');
         const form = document.getElementById('financeForm');
         const results = document.getElementById('results');
+        const budgetBreakdown = document.getElementById('budgetBreakdown');
 
         payType.addEventListener('change', () => {
             if (payType.value === 'hourly') {
@@ -171,21 +265,23 @@
             monthly = weekly * 4.33;
             yearly = weekly * 52;
 
+            // Show projections
             document.getElementById('daily').textContent = `$${daily.toFixed(2)}`;
             document.getElementById('weekly').textContent = `$${weekly.toFixed(2)}`;
             document.getElementById('monthly').textContent = `$${monthly.toFixed(2)}`;
             document.getElementById('yearly').textContent = `$${yearly.toFixed(2)}`;
             results.style.display = 'block';
+
+            // Budget breakdown
+            const needs = monthly * 0.5;
+            const wants = monthly * 0.3;
+            const savings = monthly * 0.2;
+
+            document.getElementById('needsValue').textContent = `$${needs.toFixed(2)}`;
+            document.getElementById('wantsValue').textContent = `$${wants.toFixed(2)}`;
+            document.getElementById('savingsValue').textContent = `$${savings.toFixed(2)}`;
+            budgetBreakdown.style.display = 'block';
         });
     </script>
-        <!-- Main Content -->
-        <div class="container changeColor">
-            <div class="row">
-                <div class="col-lg-8 col-md-10 mx-auto">
-                    <p>The magic calculator page will help you calculate your finances, where the numbers are optained by the ceiling method: I look up to the ceiling, think about a magic number, and write it down. </p>
-                    <p>jk, most numbers are found online. I will put the work cited/bibliography later when it works.</p>
-                </div>
-            </div>
-        </div>
 </body>
 </html>
