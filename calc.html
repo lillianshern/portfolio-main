@@ -249,7 +249,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
     
     // === Excel Export (Optimized Smartsheet-style) ===
-    downloadBtn.onclick = function() {
+    document.getElementById("downloadExcel").onclick = () => {
     const wb = XLSX.utils.book_new();
     wb.Props = { Title: "Personal Financial Statement", Author: "SmartBudget", CreatedDate: new Date() };
     // --- Core financials ---
