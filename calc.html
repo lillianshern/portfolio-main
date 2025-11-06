@@ -247,9 +247,8 @@ document.addEventListener("DOMContentLoaded", function () {
         `;
         });
     });
-</script>
-<script>
-        document.getElementById("downloadExcel").addEventListener("click", () => {
+    
+    document.getElementById("downloadExcel").addEventListener("click", () => {
         // 👇 Read current amounts from the displayed table
         const needs = parseFloat(document.querySelector("#needsAmount")?.textContent?.replace(/[^0-9.-]+/g,"") || 0);
         const wants = parseFloat(document.querySelector("#wantsAmount")?.textContent?.replace(/[^0-9.-]+/g,"") || 0);
