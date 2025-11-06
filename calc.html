@@ -226,6 +226,14 @@ document.addEventListener("DOMContentLoaded", function () {
         ctx.canvas.style.width = "400px";
         ctx.canvas.style.height = "400px";
 
+        tipsSection.style.display = 'block';
+            document.getElementById('budgetTips').innerHTML = `
+            <li>Based on your monthly income of <strong>$${monthly.toFixed(2)}</strong>:</li>
+            <li>50% Needs = <strong>$${needs.toFixed(2)}</strong></li>
+            <li>30% Wants = <strong>$${wants.toFixed(2)}</strong></li>
+            <li>20% Savings = <strong>$${savings.toFixed(2)}</strong></li>
+        `;
+
         // === Excel Export ===
         downloadBtn.onclick = function() {
             const wb = XLSX.utils.book_new();
@@ -259,13 +267,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 ws[cellRef].s.fill = { fgColor: { rgb: colColors[C-1].replace("#", "") } };
                 }
             }
-            tipsSection.style.display = 'block';
-            document.getElementById('budgetTips').innerHTML = `
-            <li>Based on your monthly income of <strong>$${monthly.toFixed(2)}</strong>:</li>
-            <li>50% Needs = <strong>$${needs.toFixed(2)}</strong></li>
-            <li>30% Wants = <strong>$${wants.toFixed(2)}</strong></li>
-            <li>20% Savings = <strong>$${savings.toFixed(2)}</strong></li>
-            `;
 
         XLSX.utils.book_append_sheet(wb, ws, "Budget Summary");
         XLSX.writeFile(wb, "Personal_Budget_Smartsheet.xlsx");
