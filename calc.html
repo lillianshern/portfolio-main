@@ -9,63 +9,23 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <title>Finance Projection Calculator</title>
+
     <style>
-        /* --- Calculator Section --- */
-        .calc-container {
-            background: #ffffff;
-            border-radius: 15px;
-            padding: 2rem;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-            margin-top: 2rem;
-        }
-        .result-box, .budget-breakdown, .tips-section {
-            background: #fff; border-radius: 15px; padding: 2rem;
-            margin-top: 2rem; box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        .calc-container, .result-box, .budget-breakdown, .tips-section {
+          background: #fff; border-radius: 15px; padding: 2rem;
+          box-shadow: 0 8px 20px rgba(0,0,0,0.1); margin-top: 2rem;
         }
         h2, h3 { text-align: center; }
-        .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: center; }
-        canvas { max-width: 100%; }
+        canvas { width: 100%; max-width: 300px; margin: auto; display: block; }
         table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
         th, td { padding: 0.5rem; border-bottom: 1px solid #ddd; text-align: left; }
         th { background-color: #f1f3f5; }
         .download-btn {
-            display: block; width: 100%; margin-top: 1.5rem;
-            background-color: #007bff; color: white;
-            border: none; border-radius: 10px; padding: 10px; font-size: 1rem;
+          display: block; width: 100%; margin-top: 1.5rem;
+          background-color: #007bff; color: white;
+          border: none; border-radius: 10px; padding: 10px; font-size: 1rem;
         }
-    .download-btn:hover { background-color: #0056b3; }
-        /* --- Budget Breakdown Section --- */
-        .budget-breakdown {
-            background: #ffffff;
-            border-radius: 15px;
-            padding: 2rem;
-            margin-top: 2rem;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-        }
-        .progress {
-            height: 30px;
-            margin-bottom: 1rem;
-        }
-        .progress-bar {
-            font-weight: 600;
-        }
-
-        /* --- Tips Section --- */
-        .tips-section {
-            background: #ffffff;
-            border-radius: 15px;
-            padding: 2rem;
-            margin-top: 2rem;
-            margin-bottom: 3rem;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-        }
-        .tips-section h3 {
-            margin-bottom: 1rem;
-            color: #007bff;
-        }
-        ul {
-            margin-bottom: 1rem;
-        }
+        .download-btn:hover { background-color: #0056b3; }
     </style>
 </head>
 
