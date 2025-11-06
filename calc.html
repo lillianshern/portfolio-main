@@ -70,10 +70,9 @@
 
     <!-- Main Content -->
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-8 col-md-10 calc-container">
-                <h2>Life Calculator</h2>
-                <p class="text-center"> Enter your pay details to see projections and smart budgeting suggestions.</p>
+        <div class="col-lg-8 col-md-10 calc-container">
+            <h2>Life Calculator</h2>
+            <p class="text-center"> Enter your pay details to see projections and smart budgeting suggestions.</p>
 
                 <form id="financeForm">
                     <div class="form-group mb-3">
@@ -114,125 +113,107 @@
                     <button type="submit" class="btn btn-primary mt-3 w-100">Calculate</button>
                 </form>
 
-                <div id="results" class="result-box" style="display:none;">
+                <div id="results" class="result-box text-center" style="display:none;">
                     <h4>Your Projected Income</h4>
                     <p>Daily: <strong id="daily">$0</strong> | Weekly: <strong id="weekly">$0</strong></p>
                     <p>Monthly: <strong id="monthly">$0</strong> | Yearly: <strong id="yearly">$0</strong></p>
                 </div>
 
-                <div id="budgetBreakdown" class="budget-breakdown" style="display:none;">
-                    <h3>📊 Suggested Budget Breakdown (50/30/20 Rule)</h3>
-                    <div class="two-column">
-                      <canvas id="budgetChart"></canvas>
-                      <div>
-                        <table id="budgetTable">
-                          <thead><tr><th>Category</th><th>Suggested Amount ($)</th></tr></thead>
-                          <tbody></tbody>
-                        </table>
-                        <button id="downloadExcel" class="download-btn">📥 Download Personalized Excel Budget</button>
-                      </div>
-                    </div>
+            <!-- Budget Section -->
+            <div id="budgetBreakdown" class="budget-breakdown" style="display:none;">
+                <h3>📊 Suggested Budget Breakdown (50/30/20 Rule)</h3>
+                <div class="row mt-4">
+                <div class="col-md-6 text-center">
+                    <canvas id="budgetChart"></canvas>
                 </div>
+                <div class="col-md-6">
+                    <table id="budgetTable">
+                    <thead><tr><th>Category</th><th>Suggested Amount ($)</th></tr></thead>
+                    <tbody></tbody>
+                    </table>
+                    <button id="downloadExcel" class="download-btn">📥 Download Personalized Excel Budget</button>
+                </div>
+                </div>
+            </div>
 
-                <div class="tips-section">
-                    <h3>💡 Budgeting and Spending Tips</h3>
-                    <ul>
-                      <li><strong>50/30/20 rule:</strong> 50% needs, 30% wants, 20% savings/debt.</li>
-                      <li><strong>Pay yourself first:</strong> Save automatically before other expenses.</li>
-                      <li><strong>40% debt rule:</strong> Keep debt below 40% of gross monthly income.</li>
-                    </ul>
-                    <h3>📦 Savings and Investment Rules</h3>
-                    <ul>
-                      <li><strong>Emergency fund:</strong> Save 3–6 months of living expenses.</li>
-                      <li><strong>100 minus your age rule:</strong> For stock vs. bond allocation.</li>
-                    </ul>
-                    <h3>🌱 General Principles</h3>
-                    <ul>
-                      <li><strong>Align spending with values:</strong> Focus on what matters.</li>
-                      <li><strong>Avoid emotional decisions:</strong> Stick to your plan.</li>
-                      <li><strong>Make down payments:</strong> Aim for 20% to reduce loan costs.</li>
-                    </ul>
-                </div>
+            <!-- Dynamic Tips -->
+            <div id="tipsSection" class="tips-section" style="display:none;">
+                <h3>💡 Budgeting and Spending Tips (Based on Your Income)</h3>
+                <ul id="budgetTips"></ul>
+                <h3>📦 Savings and Investment Rules</h3>
+                <ul id="savingTips"></ul>
+                <h3>🌱 General Principles</h3>
+                <ul id="generalTips"></ul>
             </div>
         </div>
     </div>
 
     <script>
-        const payType = document.getElementById('payType');
-        const hourlyFields = document.getElementById('hourlyFields');
-        const paycheckFields = document.getElementById('paycheckFields');
-        const form = document.getElementById('financeForm');
-        const results = document.getElementById('results');
-        const budgetBreakdown = document.getElementById('budgetBreakdown');
-        const budgetTableBody = document.querySelector("#budgetTable tbody");
-        let chartInstance = null;
+    const payType = document.getElementById('payType');
+    const hourlyFields = document.getElementById('hourlyFields');
+    const paycheckFields = document.getElementById('paycheckFields');
+    const form = document.getElementById('financeForm');
+    const results = document.getElementById('results');
+    const budgetBreakdown = document.getElementById('budgetBreakdown');
+    const budgetTableBody = document.querySelector("#budgetTable tbody");
+    const tipsSection = document.getElementById('tipsSection');
+    const budgetTips = document.getElementById('budgetTips');
+    const savingTips = document.getElementById('savingTips');
+    const generalTips = document.getElementById('generalTips');
+    let chartInstance = null;
 
-        payType.addEventListener('change', () => {
+    payType.addEventListener('change', () => {
+        hourlyFields.style.display = payType.value === 'hourly' ? 'block' : 'none';
+        paycheckFields.style.display = payType.value === 'paycheck' ? 'block' : 'none';
+    });
+
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        let weekly = 0;
         if (payType.value === 'hourly') {
-            hourlyFields.style.display = 'block';
-            paycheckFields.style.display = 'none';
+            const rate = parseFloat(document.getElementById('hourlyRate').value || 0);
+            const hours = parseFloat(document.getElementById('hoursPerWeek').value || 0);
+            weekly = rate * hours;
         } else {
-            paycheckFields.style.display = 'block';
-            hourlyFields.style.display = 'none';
-        }
-        });
+            const pay = parseFloat(document.getElementById('payAmount').value || 0);
+            const freq = document.getElementById('payFrequency').value;
+        if (freq === 'weekly') weekly = pay;
+        else if (freq === 'biweekly') weekly = pay / 2;
+        else if (freq === 'monthly') weekly = (pay * 12) / 52;
+    }
+    
+    const daily = weekly / 7;
+    const monthly = weekly * 4.33;
+    const yearly = weekly * 52;
+    
+    document.getElementById('daily').textContent = `$${daily.toFixed(2)}`;
+    document.getElementById('weekly').textContent = `$${weekly.toFixed(2)}`;
+    document.getElementById('monthly').textContent = `$${monthly.toFixed(2)}`;
+    document.getElementById('yearly').textContent = `$${yearly.toFixed(2)}`;
+    results.style.display = 'block';
 
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
+    // 50/30/20 Breakdown
+    const needs = monthly * 0.5;
+    const wants = monthly * 0.3;
+    const savings = monthly * 0.2;
 
-            let daily = 0, weekly = 0, monthly = 0, yearly = 0;
+    budgetTableBody.innerHTML = "";
+    const rows = [
+        ["Needs (Rent, Bills, Groceries, Medical)", needs],
+        ["Wants (Dining, Entertainment, Shopping)", wants],
+        ["Savings & Debt Repayment", savings],
+    ];
+    rows.forEach(r => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${r[0]}</td><td>$${r[1].toFixed(2)}</td>`;
+        budgetTableBody.appendChild(tr);
+    });
+    budgetBreakdown.style.display = 'block';
 
-            if (payType.value === 'hourly') {
-                const rate = parseFloat(document.getElementById('hourlyRate').value || 0);
-                const hours = parseFloat(document.getElementById('hoursPerWeek').value || 0);
-                weekly = rate * hours;
-            } else {
-                const pay = parseFloat(document.getElementById('payAmount').value || 0);
-                const freq = document.getElementById('payFrequency').value;
-                if (freq === 'weekly') weekly = pay;
-                else if (freq === 'biweekly') weekly = pay / 2;
-                else if (freq === 'monthly') weekly = (pay * 12) / 52;
-            }
-
-            daily = weekly / 7;
-            monthly = weekly * 4.33;
-            yearly = weekly * 52;
-
-            document.getElementById('daily').textContent = `$${daily.toFixed(2)}`;
-            document.getElementById('weekly').textContent = `$${weekly.toFixed(2)}`;
-            document.getElementById('monthly').textContent = `$${monthly.toFixed(2)}`;
-            document.getElementById('yearly').textContent = `$${yearly.toFixed(2)}`;
-            results.style.display = 'block';
-
-            // Budget breakdown
-            const needs = monthly * 0.5;
-            const wants = monthly * 0.3;
-            const savings = monthly * 0.2;
-
-            document.getElementById('needsValue').textContent = `$${needs.toFixed(2)}`;
-            document.getElementById('wantsValue').textContent = `$${wants.toFixed(2)}`;
-            document.getElementById('savingsValue').textContent = `$${savings.toFixed(2)}`;
-            budgetBreakdown.style.display = 'block';
-
-            budgetTableBody.innerHTML = "";
-            const rows = [
-            ["Needs (Rent, Bills, Groceries, Medical)", needs],
-            ["Wants (Dining, Entertainment, Shopping)", wants],
-            ["Savings & Debt Repayment", savings],
-            ];
-            
-            rows.forEach(r => {
-                const tr = document.createElement("tr");
-                tr.innerHTML = `<td>${r[0]}</td><td>$${r[1].toFixed(2)}</td>`;
-                budgetTableBody.appendChild(tr);
-            });
-            
-            budgetBreakdown.style.display = 'block';
-
-      // Pie Chart
-      const ctx = document.getElementById('budgetChart').getContext('2d');
-      if (chartInstance) chartInstance.destroy();
-      chartInstance = new Chart(ctx, {
+    // Pie Chart
+    const ctx = document.getElementById('budgetChart').getContext('2d');
+        if (chartInstance) chartInstance.destroy();
+        chartInstance = new Chart(ctx, {
         type: 'pie',
         data: {
           labels: ['Needs', 'Wants', 'Savings'],
@@ -242,10 +223,28 @@
           }]
         },
         options: { plugins: { legend: { position: 'bottom' } } }
-      });
-
-      // Excel Download
-      document.getElementById("downloadExcel").onclick = () => {
+    });
+    // Dynamic Tips
+    tipsSection.style.display = 'block';
+    budgetTips.innerHTML = `
+        <li><strong>50/30/20 rule:</strong> Based on your monthly income of <strong>$${monthly.toFixed(2)}</strong>,
+            you should aim to spend <strong>$${needs.toFixed(2)}</strong> on needs, 
+            <strong>$${wants.toFixed(2)}</strong> on wants, and 
+            <strong>$${savings.toFixed(2)}</strong> on savings/debt.</li>
+        <li><strong>Pay yourself first:</strong> Try automatically saving at least $${(monthly * 0.1).toFixed(2)} per month before other expenses.</li>
+        <li><strong>40% debt rule:</strong> Keep total monthly debt under $${(monthly * 0.4).toFixed(2)}.</li>
+      `;
+      savingTips.innerHTML = `
+        <li><strong>Emergency fund:</strong> Save between $${(monthly * 3).toFixed(2)} and $${(monthly * 6).toFixed(2)} for 3–6 months of expenses.</li>
+        <li><strong>100 minus your age rule:</strong> Allocate that percentage of your portfolio to stocks for growth.</li>
+      `;
+      generalTips.innerHTML = `
+        <li><strong>Align spending with values:</strong> Ensure your $${wants.toFixed(2)} in “wants” reflects what brings real value.</li>
+        <li><strong>Avoid emotional decisions:</strong> Stick to your long-term financial goals.</li>
+        <li><strong>Make down payments:</strong> For big purchases, save around $${(monthly * 0.2).toFixed(2)} upfront.</li>
+    `; 
+    // Excel Download
+    document.getElementById("downloadExcel").onclick = () => {
         const wb = XLSX.utils.book_new();
         const data = [
           ["Category", "Suggested Amount ($)"],
@@ -253,14 +252,14 @@
           ["Wants (Dining, Entertainment, Shopping)", wants.toFixed(2)],
           ["Savings & Debt Repayment", savings.toFixed(2)],
           [],
-          ["Total Monthly Income", monthly.toFixed(2)],
-          ["Total Yearly Income", yearly.toFixed(2)]
+          ["Monthly Income", monthly.toFixed(2)],
+          ["Yearly Income", yearly.toFixed(2)]
         ];
         const ws = XLSX.utils.aoa_to_sheet(data);
         XLSX.utils.book_append_sheet(wb, ws, "Budget Plan");
         XLSX.writeFile(wb, "Personal_Budget_Plan.xlsx");
       };
     });
-    </script>
+  </script>
 </body>
 </html>
