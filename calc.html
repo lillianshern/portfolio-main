@@ -226,12 +226,24 @@ document.addEventListener("DOMContentLoaded", function () {
         ctx.canvas.style.width = "400px";
         ctx.canvas.style.height = "400px";
 
+        // Dynamic Tips
         tipsSection.style.display = 'block';
-            document.getElementById('budgetTips').innerHTML = `
-            <li>Based on your monthly income of <strong>$${monthly.toFixed(2)}</strong>:</li>
-            <li>50% Needs = <strong>$${needs.toFixed(2)}</strong></li>
-            <li>30% Wants = <strong>$${wants.toFixed(2)}</strong></li>
-            <li>20% Savings = <strong>$${savings.toFixed(2)}</strong></li>
+        budgetTips.innerHTML = `
+            <li><strong>50/30/20 rule:</strong> Based on your monthly income of <strong>$${monthly.toFixed(2)}</strong>,
+                you should aim to spend <strong>$${needs.toFixed(2)}</strong> on needs, 
+                <strong>$${wants.toFixed(2)}</strong> on wants, and 
+                <strong>$${savings.toFixed(2)}</strong> on savings/debt.</li>
+            <li><strong>Pay yourself first:</strong> Try automatically saving at least $${(monthly * 0.1).toFixed(2)} per month before other expenses.</li>
+            <li><strong>40% debt rule:</strong> Keep total monthly debt under $${(monthly * 0.4).toFixed(2)}.</li>
+        `;
+        savingTips.innerHTML = `
+            <li><strong>Emergency fund:</strong> Save between $${(monthly * 3).toFixed(2)} and $${(monthly * 6).toFixed(2)} for 3–6 months of expenses.</li>
+            <li><strong>100 minus your age rule:</strong> Allocate that percentage of your portfolio to stocks for growth.</li>
+        `;
+        generalTips.innerHTML = `
+            <li><strong>Align spending with values:</strong> Ensure your $${wants.toFixed(2)} in “wants” reflects what brings real value.</li>
+            <li><strong>Avoid emotional decisions:</strong> Stick to your long-term financial goals.</li>
+            <li><strong>Make down payments:</strong> For big purchases, save around $${(monthly * 0.2).toFixed(2)} upfront.</li>
         `;
 
         // === Excel Export ===
