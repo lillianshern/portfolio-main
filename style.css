@@ -24,6 +24,23 @@
   flex-direction: column;
   color: #f2f2f2;
 }
+.squirrel_m {
+  background-image: url("20221114_232007.jpg");
+  height: 100vh;
+  width: 100%;
+  /* change pic stretch to fit */
+  background-size: cover; 
+  /* position of img */
+  background-position: center;
+  /* make it lighter */
+  /* opacity: 0.5; */
+  /* flexbox to cernter text */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  color: #f2f2f2;
+}
 .flexbox1 {
   display: flex;
   align-content: flex-end;
