@@ -247,113 +247,111 @@ document.addEventListener("DOMContentLoaded", function () {
         `;
         });
     });
-</script>
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<script>
-    function exportSmartsheetExcel(needs, wants, savings) {
+    
+    // === Excel Export (Optimized Smartsheet-style) ===
+    downloadBtn.onclick = function() {
     const wb = XLSX.utils.book_new();
-    wb.Props = {
-        Title: "Personal Financial Statement",
-        Author: "SmartBudget",
-        CreatedDate: new Date(),
-    };
 
-    // === Structure ===
+    // --- Core financials ---
+    const totalAssets = needs + wants + savings;
+    const q2Assets = totalAssets * 1.02;
+    const q4Assets = totalAssets * 1.05;
+
+    // === Assets section ===
     const assets = [
-        ["", "START OF FY", "Q2 TOTAL", "Q4 TOTAL"],
-        ["Needs (Rent, Bills, Groceries, Medical)", needs, (needs * 1.02).toFixed(2), (needs * 1.05).toFixed(2)],
-        ["Wants (Dining, Entertainment, Shopping)", wants, (wants * 1.02).toFixed(2), (wants * 1.05).toFixed(2)],
-        ["Savings & Debt Repayment", savings, (savings * 1.02).toFixed(2), (savings * 1.05).toFixed(2)],
-        ["Total Current Assets", (needs + wants + savings).toFixed(2), ((needs + wants + savings) * 1.02).toFixed(2), ((needs + wants + savings) * 1.05).toFixed(2)],
+        ["ASSETS", "START OF FY", "Q2 TOTAL", "Q4 TOTAL"],
+        ["Needs (Rent, Bills, Groceries, Medical)", needs.toFixed(2), (needs*1.02).toFixed(2), (needs*1.05).toFixed(2)],
+        ["Wants (Dining, Entertainment, Shopping)", wants.toFixed(2), (wants*1.02).toFixed(2), (wants*1.05).toFixed(2)],
+        ["Savings & Debt Repayment", savings.toFixed(2), (savings*1.02).toFixed(2), (savings*1.05).toFixed(2)],
+        ["TOTAL CURRENT ASSETS", totalAssets.toFixed(2), q2Assets.toFixed(2), q4Assets.toFixed(2)],
     ];
 
+    // === Liabilities placeholder (blank) ===
     const liabilities = [
-        ["", "START OF FY", "Q2 TOTAL", "Q4 TOTAL"],
-        ["Credit Card Debt", 9000, 8800, 8500],
-        ["Other Liabilities", 55, 55, 55],
-        ["Total Liabilities", 9055, 8855, 8555],
+        ["LIABILITIES", "START OF FY", "Q2 TOTAL", "Q4 TOTAL"],
+        ["(Add if applicable)", "", "", ""],
+        ["TOTAL LIABILITIES", "", "", ""],
     ];
 
     const netAssets = [
-        ["Net Assets (Assets - Liabilities)", 
-        (needs + wants + savings - 9055).toFixed(2),
-        (((needs + wants + savings) * 1.02 - 8855).toFixed(2)),
-        (((needs + wants + savings) * 1.05 - 8555).toFixed(2))
-        ]
+        ["NET ASSETS (Assets - Liabilities)", totalAssets.toFixed(2), q2Assets.toFixed(2), q4Assets.toFixed(2)],
     ];
 
-    // === Convert to sheets ===
-    const ws = XLSX.utils.aoa_to_sheet([
+    const wsData = [
         ["Personal Financial Statement Template"],
         [],
-        ["ASSETS"],
         ...assets,
         [],
-        ["LIABILITIES"],
         ...liabilities,
         [],
-        ...netAssets
-    ]);
+        ...netAssets,
+    ];
 
-    // === Style Emulation ===
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+    // === Basic coloring and styling ===
     const range = XLSX.utils.decode_range(ws["!ref"]);
-    const boldCells = ["A1", "A3", "A9", "A14"]; // Section headers
 
-    // Color columns (blue/green/purple style)
-    const colFills = ["#DBEAFE", "#D1FAE5", "#F5D0FE"];
+    // Color header rows
+    for (let R = 0; R <= range.e.r; R++) {
+        const firstCell = XLSX.utils.encode_cell({r: R, c: 0});
+        const cell = ws[firstCell];
+        if (cell && typeof cell.v === "string" && cell.v === cell.v.toUpperCase()) {
+        if (!cell.s) cell.s = {};
+        cell.s.font = { bold: true, color: { rgb: "000000" }, sz: 12 };
+        cell.s.fill = { fgColor: { rgb: "E0E7FF" } }; // light indigo header
+        }
+    }
 
-    for (let C = range.s.c + 1; C <= range.e.c; C++) {
-        for (let R = 0; R <= range.e.r; R++) {
-        const ref = XLSX.utils.encode_cell({ r: R, c: C });
+    // Color financial columns
+    const colColors = ["#DBEAFE", "#D1FAE5", "#F5D0FE"];
+    for (let C = 1; C <= 3; C++) {
+        for (let R = 1; R <= range.e.r; R++) {
+        const ref = XLSX.utils.encode_cell({r: R, c: C});
         const cell = ws[ref];
         if (!cell) continue;
         if (!cell.s) cell.s = {};
-        cell.s.fill = { fgColor: { rgb: colFills[C - 1].replace("#", "") } };
+        cell.s.fill = { fgColor: { rgb: colColors[C-1].replace("#", "") } };
         cell.s.alignment = { horizontal: "center" };
         }
     }
 
-    // Bold headers
-    boldCells.forEach(ref => {
-        const cell = ws[ref];
-        if (cell) {
-        if (!cell.s) cell.s = {};
-        cell.s.font = { bold: true, sz: 14 };
-        }
-    });
-
-    // Borders
-    for (let R = 0; R <= range.e.r; R++) {
-        for (let C = 0; C <= range.e.c; C++) {
-        const ref = XLSX.utils.encode_cell({ r: R, c: C });
+    // Borders only around data region
+    for (let R = 2; R <= range.e.r; R++) {
+        for (let C = 0; C <= 3; C++) {
+        const ref = XLSX.utils.encode_cell({r: R, c: C});
         if (!ws[ref]) continue;
         if (!ws[ref].s) ws[ref].s = {};
         ws[ref].s.border = {
-            top: { style: "thin", color: { rgb: "999999" } },
-            bottom: { style: "thin", color: { rgb: "999999" } },
-            left: { style: "thin", color: { rgb: "999999" } },
-            right: { style: "thin", color: { rgb: "999999" } },
+            top: { style: "thin", color: { rgb: "AAAAAA" } },
+            bottom: { style: "thin", color: { rgb: "AAAAAA" } },
+            left: { style: "thin", color: { rgb: "AAAAAA" } },
+            right: { style: "thin", color: { rgb: "AAAAAA" } },
         };
         }
     }
 
-        // === Append Sheet ===
-        XLSX.utils.book_append_sheet(wb, ws, "Budget Summary");
+    // Append to workbook
+    XLSX.utils.book_append_sheet(wb, ws, "Budget Summary");
 
-        // === Charts (Pie + Column) ===
-        const chartData = [
-            ["Category", "Amount"],
-            ["Needs", needs],
-            ["Wants", wants],
-            ["Savings", savings],
-        ];
+    // === Chart Data sheet (Pie + Column data) ===
+    const chartSheetData = [
+        ["Category", "Amount"],
+        ["Needs", needs],
+        ["Wants", wants],
+        ["Savings", savings],
+        [],
+        ["Quarter", "Total Assets"],
+        ["Start of FY", totalAssets],
+        ["Q2 Total", q2Assets],
+        ["Q4 Total", q4Assets],
+    ];
+    const wsChart = XLSX.utils.aoa_to_sheet(chartSheetData);
+    XLSX.utils.book_append_sheet(wb, wsChart, "Charts");
 
-    const chartSheet = XLSX.utils.aoa_to_sheet(chartData);
-    XLSX.utils.book_append_sheet(wb, chartSheet, "Charts");
-
+    // Download file
     XLSX.writeFile(wb, "Personal_Budget_Smartsheet.xlsx");
-    }
-    </script>
+    };
 </script>    
 </body>
 </html>
