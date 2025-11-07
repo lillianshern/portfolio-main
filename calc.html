@@ -189,6 +189,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const needs = monthly * 0.5;
         const wants = monthly * 0.3;
         const savings = monthly * 0.2;
+        
 
         document.getElementById('daily').textContent = `$${(weekly / 7).toFixed(2)}`;
         document.getElementById('weekly').textContent = `$${weekly.toFixed(2)}`;
@@ -245,9 +246,11 @@ document.addEventListener("DOMContentLoaded", function () {
             <li><strong>Avoid emotional decisions:</strong> Stick to your long-term financial goals.</li>
             <li><strong>Make down payments:</strong> For big purchases, save around $${(monthly * 0.2).toFixed(2)} upfront.</li>
         `;
-        });
-
-        document.getElementById("downloadExcel").addEventListener("click", () =>  {
+    });
+});
+</script>
+<script>
+    document.getElementById("downloadExcel").addEventListener("click", () =>  {
             if (typeof needs === "undefined" || typeof wants === "undefined" || typeof savings === "undefined") {
             alert("lol feature not available yet");
             return;
@@ -345,7 +348,6 @@ document.addEventListener("DOMContentLoaded", function () {
             // === Save File ===
             XLSX.writeFile(wb, "Personal_Budget_Smartsheet.xlsx");
         });
-     });
-    </script>
+</script>
 </body>
 </html>
